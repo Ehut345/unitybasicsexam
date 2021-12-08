@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class NewPooler : MonoBehaviour
 {
-
     [System.Serializable]
     public class PoolItem
     {
@@ -13,12 +12,9 @@ public class NewPooler : MonoBehaviour
         public int PooledAmount;
         public string PoolName;
     }
-
     public static NewPooler Instance;
     public List<PoolItem> Pools;
-
     private Dictionary<string, Queue<GameObject>> poolDictionary;
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -37,15 +33,11 @@ public class NewPooler : MonoBehaviour
 
         foreach (PoolItem pool in Pools)
         {
-            // Create a game object for each pool
-            // Keeps it clean in the Inspector
             GameObject go = new GameObject(pool.PoolName + " Pool");
             go.transform.SetParent(transform, false);
 
-            // Create an object pool queue
             Queue<GameObject> objectPoolQueue = new Queue<GameObject>();
 
-            // Populate the pool with the defined prefab
             for (int i = 0; i < pool.PooledAmount; i++)
             {
                 GameObject pooledObject = (GameObject)Instantiate(pool.PooledObject, transform.parent);
@@ -53,17 +45,9 @@ public class NewPooler : MonoBehaviour
                 pooledObject.SetActive(false);
                 objectPoolQueue.Enqueue(pooledObject);
             }
-
-            // Add pool to dictionary
             poolDictionary.Add(pool.PoolName, objectPoolQueue);
         }
     }
-
-    /// <summary>
-    /// Gets an unused object from the specified pool
-    /// </summary>
-    /// <param name="PoolName">Name of Pool</param>
-    /// <returns>An unused object or null if there is none available</returns>
     public GameObject GetPooledObject(string PoolName, Vector3 position)
     {
         Queue<GameObject> pool;
@@ -81,12 +65,6 @@ public class NewPooler : MonoBehaviour
             return null;
         }
     }
-
-    /// <summary>
-    /// Returns the item back to the appropriate pool
-    /// </summary>
-    /// <param name="go">GameObject to return to pool</param>
-    /// <param name="PoolName">Name of Pool</param>
     public bool ReturnToPool(GameObject go, string PoolName)
     {
         if (!poolDictionary.ContainsKey(PoolName)) return false;
@@ -96,12 +74,6 @@ public class NewPooler : MonoBehaviour
         go.SetActive(false);
         return true;
     }
-
-    /// <summary>
-    /// Returns number of unused objects in the specified pool
-    /// </summary>
-    /// <param name="PoolName">Name of Pool</param>
-    /// <returns>Number of object in pool, or null if pool does not exist</returns>
     public int? ItemsInPool(string PoolName)
     {
         if (!poolDictionary.ContainsKey(PoolName)) return null;
