@@ -27,7 +27,7 @@ public class Player : MonoBehaviour
         float z = Input.GetAxis("Vertical");
         Vector3 move = transform.right * x + transform.forward * z;
         controller.Move(move * speed * Time.deltaTime);
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !startmenu.GameIsPaused)
         {
             GameObject temp = NewPooler.Instance.GetPooledObject("Bullet", shootpoint.position);
             audio.Play();
